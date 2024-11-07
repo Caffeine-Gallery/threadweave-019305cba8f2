@@ -9,28 +9,11 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="mb-4">Discussion Board</h1>
-        
-        <!-- New Thread Form -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Create New Thread</h5>
-                <form id="newThreadForm">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="threadTitle" placeholder="Thread Title" required>
-                    </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" id="threadContent" placeholder="Thread Content" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="authorName" placeholder="Your Name (optional)">
-                        <small class="text-muted">Leave empty to post as Anonymous</small>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create Thread</button>
-                </form>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Discussion Board</h1>
+            <a href="create.html" class="btn btn-primary">Create New Thread</a>
         </div>
-
+        
         <!-- Threads List -->
         <div id="threadsList">
             <div class="text-center" id="loading">

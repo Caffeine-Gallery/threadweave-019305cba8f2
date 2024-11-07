@@ -101,40 +101,5 @@ function createThreadElement(thread) {
     return threadCard;
 }
 
-// Handle new thread submission
-document.getElementById('newThreadForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const title = document.getElementById('threadTitle').value;
-    const content = document.getElementById('threadContent').value;
-    const author = document.getElementById('authorName').value.trim() || "Anonymous";
-
-    const submitButton = e.target.querySelector('button');
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...';
-
-    try {
-        const threadId = await backend.createThread(title, content, author);
-        // Create a new thread object
-        const newThread = {
-            id: threadId,
-            title: title,
-            content: content,
-            author: author,
-            timestamp: BigInt(Date.now() * 1000000),
-            comments: []
-        };
-        
-        // Add to local array and refresh display
-        threads.unshift(newThread);
-        displayThreads(threads);
-        e.target.reset();
-    } catch (error) {
-        console.error('Error creating thread:', error);
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Create Thread';
-    }
-};
-
 // Initial load
 window.addEventListener('load', loadThreads);
