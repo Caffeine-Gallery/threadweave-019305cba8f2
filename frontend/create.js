@@ -12,7 +12,7 @@ document.getElementById('newThreadForm').onsubmit = async (e) => {
 
     try {
         await backend.createThread(title, content, author);
-        window.location.href = 'index.html';
+        window.location.href = '/';
     } catch (error) {
         console.error('Error creating thread:', error);
         alert('Failed to create thread. Please try again.');
