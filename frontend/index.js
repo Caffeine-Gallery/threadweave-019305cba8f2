@@ -87,8 +87,20 @@ document.getElementById('newThreadForm').onsubmit = async (e) => {
     submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...';
 
     try {
-        await backend.createThread(title, content, author);
-        await loadThreads();
+        const threadId = await backend.createThread(title, content, author);
+        // Create a new thread object
+        const newThread = {
+            id: threadId,
+            title: title,
+            content: content,
+            author: author,
+            timestamp: BigInt(Date.now() * 1000000),
+            comments: []
+        };
+        
+        // Add to local array and refresh display
+        threads.unshift(newThread);
+        displayThreads(threads);
         e.target.reset();
     } catch (error) {
         console.error('Error creating thread:', error);
