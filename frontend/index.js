@@ -61,7 +61,7 @@ function createThreadElement(thread) {
     commentForm.onsubmit = async (e) => {
         e.preventDefault();
         const content = commentForm.querySelector('.comment-content').value;
-        const author = commentForm.querySelector('.comment-author').value;
+        const author = commentForm.querySelector('.comment-author').value.trim() || "Anonymous";
         
         const submitButton = commentForm.querySelector('button');
         submitButton.disabled = true;
@@ -106,7 +106,7 @@ document.getElementById('newThreadForm').onsubmit = async (e) => {
     e.preventDefault();
     const title = document.getElementById('threadTitle').value;
     const content = document.getElementById('threadContent').value;
-    const author = document.getElementById('authorName').value;
+    const author = document.getElementById('authorName').value.trim() || "Anonymous";
 
     const submitButton = e.target.querySelector('button');
     submitButton.disabled = true;
