@@ -25,19 +25,11 @@ function displayThreads(threads) {
     });
 }
 
-function createThreadElement(thread) {
-    const template = document.getElementById('threadTemplate');
-    const threadElement = template.content.cloneNode(true);
-    const threadCard = threadElement.querySelector('.thread-card');
-
-    threadCard.querySelector('.thread-title').textContent = thread.title;
-    threadCard.querySelector('.thread-content').textContent = thread.content;
-    threadCard.querySelector('.thread-author').textContent = thread.author;
-    threadCard.querySelector('.thread-date').textContent = new Date(Number(thread.timestamp) / 1000000).toLocaleString();
-
-    // Display comments
+function updateCommentsSection(threadCard, comments) {
     const commentsList = threadCard.querySelector('.comments-list');
-    thread.comments.forEach(comment => {
+    commentsList.innerHTML = ''; // Clear existing comments
+    
+    comments.forEach(comment => {
         const commentElement = document.createElement('div');
         commentElement.className = 'comment mb-2 p-2 border-start';
         commentElement.innerHTML = `
@@ -48,6 +40,21 @@ function createThreadElement(thread) {
         `;
         commentsList.appendChild(commentElement);
     });
+}
+
+function createThreadElement(thread) {
+    const template = document.getElementById('threadTemplate');
+    const threadElement = template.content.cloneNode(true);
+    const threadCard = threadElement.querySelector('.thread-card');
+
+    threadCard.setAttribute('data-thread-id', thread.id.toString());
+    threadCard.querySelector('.thread-title').textContent = thread.title;
+    threadCard.querySelector('.thread-content').textContent = thread.content;
+    threadCard.querySelector('.thread-author').textContent = thread.author;
+    threadCard.querySelector('.thread-date').textContent = new Date(Number(thread.timestamp) / 1000000).toLocaleString();
+
+    // Display comments
+    updateCommentsSection(threadCard, thread.comments);
 
     // Handle new comment submission
     const commentForm = threadCard.querySelector('.new-comment-form');
@@ -61,9 +68,28 @@ function createThreadElement(thread) {
         submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
 
         try {
-            await backend.addComment(thread.id, content, author);
-            await loadThreads(); // Reload all threads to show new comment
-            commentForm.reset();
+            const success = await backend.addComment(thread.id, content, author);
+            if (success) {
+                // Create new comment object
+                const newComment = {
+                    content: content,
+                    author: author,
+                    timestamp: BigInt(Date.now() * 1000000)
+                };
+                
+                // Update local thread data
+                const threadIndex = threads.findIndex(t => t.id === thread.id);
+                if (threadIndex !== -1) {
+                    threads[threadIndex].comments.push(newComment);
+                    // Update only this thread's comments section
+                    const threadCard = document.querySelector(`[data-thread-id="${thread.id}"]`);
+                    if (threadCard) {
+                        updateCommentsSection(threadCard, threads[threadIndex].comments);
+                    }
+                }
+                
+                commentForm.reset();
+            }
         } catch (error) {
             console.error('Error adding comment:', error);
         } finally {
