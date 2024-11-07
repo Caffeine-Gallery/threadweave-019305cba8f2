@@ -1,0 +1,22 @@
+type ThreadId = nat;
+type Thread = 
+ record {
+   author: text;
+   comments: vec Comment;
+   content: text;
+   id: ThreadId;
+   timestamp: int;
+   title: text;
+ };
+type Comment = 
+ record {
+   author: text;
+   content: text;
+   timestamp: int;
+ };
+service : {
+  addComment: (ThreadId, text, text) -> (bool);
+  createThread: (text, text, text) -> (ThreadId);
+  getAllThreads: () -> (vec Thread) query;
+  getThread: (ThreadId) -> (opt Thread) query;
+}
